@@ -5,46 +5,41 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    public static int score;
-    public Text gameOverText;
-    public Text youWonText;
-    public int winningScore;
+    public static int score;    //liczba punktów
+    public Text gameOverText;   //etykieta do wykorzystania w razie przegranej
+    public Text youWonText;     //etykieta w przypadku wygranej
+    public int winningScore;    //warunek wygrania
 
-    Text text;
+    Text text;                  //etykieta z liczbą punktów
 
-    // Start is called before the first frame update
     void Start()
     {
-        gameOverText.enabled = false;
-        youWonText.enabled = false;
+        gameOverText.enabled = false;   //początkowo obie plansze
+        youWonText.enabled = false;     //są wyłączone
 
-        text = GetComponent<Text>();
-        score = 0;
+        text = GetComponent<Text>();    //utworzenie referencji do etykiety z punktami
+        Reset();                        //wyzerowanie punktów
     }
 
-    // Update is called once per frame
     void Update()
     {
-        PreventNegativeScore();
-        
-        text.text = score.ToString();
+        text.text = score.ToString();   //zaktualizowanie planszy z punktami
 
-        if (score >= winningScore)
+        if (score >= winningScore)      //sprawdzenie, czy gracz wygrał
             WinningEndGame();        
     }
 
-    public static void AddPoints(int pointsToAdd) => score += pointsToAdd;
-    public static void Reset() => score = 0;
+    public static void AddPoints(int pointsToAdd) 
+        => score += pointsToAdd;        //dodawanie punktów
+    public static void Reset() 
+        => score = 0;                   //wyzerowanie punktów
 
-    void PreventNegativeScore() => score = score < 0 ? 0 : score;
     void WinningEndGame()
     {
-        youWonText.enabled = true;
-        Debug.Log("You win!!!");
-        PauseGame();
+        youWonText.enabled = true;      //włączenie planszy wygranej
+        Debug.Log("You win!!!");        //logowanie (do testów)
+        PauseGame();                    //wymuszona pauza
     }
     void PauseGame()
-    {
-        Time.timeScale = 0;
-    }
+        => Time.timeScale = 0;          //pauza to zatrzymanie czasu
 }

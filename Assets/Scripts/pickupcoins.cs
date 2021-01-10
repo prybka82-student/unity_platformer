@@ -23,11 +23,10 @@ public class pickupcoins : MonoBehaviour
         //wykrycie dotknięcia monety przez obiekt o tagu "Player"
         if (other.gameObject.CompareTag("Player"))
         {
-            Destroy(this.gameObject);
+            Destroy(this.gameObject); //usunięcie monety
             Debug.Log("Coin was picked up");
 
-            //dodanie punktu
-            ScoreManager.AddPoints(pointsToAdd);
+            ScoreManager.AddPoints(pointsToAdd); //dodanie punktu
         }
     }
 }

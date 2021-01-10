@@ -13,7 +13,7 @@ public class PlatformFall : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>(); 
     }
 
-    // Dotknięcie platformy z innym o tagu "Player" spowoduje opadanie platformy po czasie fallDelay
+    // Dotknięcie platformy przed obiekt o tagu "Player" spowoduje opadanie platformy po czasie fallDelay
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player"))

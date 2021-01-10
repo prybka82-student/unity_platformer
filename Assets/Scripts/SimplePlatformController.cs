@@ -4,44 +4,39 @@ using System.Collections;
 public class SimplePlatformController : MonoBehaviour
 {
     [HideInInspector]
-    public bool facingRight = true; // Infinite scroller we move in one direction
+    public bool facingRight = true;     // skierowanie w prawo
     [HideInInspector]
-    public bool jump = false;         // Has our character jumped?
-    public float moveForce = 365f;                    // movement Force multiplier
-    public float maxSpeed = 5f;                       // Maximum velocity
-    public float jumpForce = 1000f;                   // y Velocity of Jumping
-    public Transform groundCheck;                     // Used to compute if our character is touching the ground.
-                                                      // Essentially casting a ray downwards onto the ground plane.
+    public bool jump = false;           // wykonywanie skoku
+    public float moveForce = 365f;      // prędkość ruchu (mnożnik prędkości)
+    public float maxSpeed = 5f;         // maksymalna prędkość
+    public float jumpForce = 1000f;     // prędkość skoku
 
-    private bool grounded = false;                    // Are we on the ground or not?
-    private Rigidbody2D rb2d;                         // Instance of our RigidBody. Good practice to do this, as opposed
-                                                      // to directly referencing our rigidbody object.
-    private float horizontalInput; 
+    public Transform groundCheck;       // obiekt groundCheck
 
-    public int TestValue1;
-    public int TestValue2;
+    private bool grounded = false;      // czy postać na ziemi
+    private Rigidbody2D rb2d;           // referencja do obiekt typu RigidBody2D będącego składnikiem postaci
 
-    // Use this for initialization
+    private float horizontalInput;      // jak długo przytrzymywano klawisz ruchu
+
     void Awake()
     {
-        rb2d = GetComponent<Rigidbody2D>();
+        rb2d = GetComponent<Rigidbody2D>(); // inicjalizacja referencji do ciała postaci
     }
 
-    // Update is called once per frame
+    // aktualizacja w każdej klatce
     void Update()
     {
-        // Czy postać jest na ziemi
-        grounded = Physics2D.Linecast( //rzuca odcinek i informuje, czy jakiś obiekt dotknął tej linii
-                transform.position, //początek
-                groundCheck.position, //koniec
-                1 << LayerMask.NameToLayer("Ground")); //ograniczenie do określonej warstwy
+        grounded = Physics2D.Linecast(  //rzuca odcinek i informuje, czy jakiś obiekt dotknął tej linii
+                transform.position,     //początek linii -- bieżący obiekt
+                groundCheck.position,   //koniec linii -- obiekt potomny groundCheck
+                1 << LayerMask.NameToLayer("Ground")); //tylko stykanie z warstwą "Ground"
         
-        // Włączenie skoku, jeśli wciśnięto spację i postać jest na ziemi
+        // włączenie skoku, jeśli wciśnięto spację i postać jest na ziemi
         if (Input.GetButtonDown("Jump") && grounded)
             jump = true;
     }
 
-    // Odwracanie postaci
+    // odwracanie postaci
     void Flip()
     {
         facingRight = !facingRight;
@@ -50,26 +45,26 @@ public class SimplePlatformController : MonoBehaviour
         transform.localScale = tempScale;
     }
 
-    // Called once per physics frame
+    // obliczenia parametrów ruchu wykonywane częściej niż raz na klatkę ruchu
     void FixedUpdate()
     {
         horizontalInput = Input.GetAxis("Horizontal");  // wciśnięcie i przytrzymanie klawiszy kursora w lewo lub w prawo
 
-        //Przyspieszanie
+        // przyspieszanie - wielokrotność stopnia przytrzymywania klawisza ruchu i bieżącej prędkości
         if (horizontalInput * rb2d.velocity.x < maxSpeed)
             SpeedUp();
 
-        // If we're greater than our max speed, then keep moving us at max speed.
+        // ograniczenie do maks. prędkości
         if (Mathf.Abs(rb2d.velocity.x) > maxSpeed)
             rb2d.velocity = GetMaxSpeed();
 
-        // Odwracanie postaci
+        // odwracanie postaci
         if (horizontalInput > 0 && !facingRight)
             Flip();
         else if (horizontalInput < 0 && facingRight)
             Flip();
         
-        // W razie skoku dodaj moc pionową
+        // w razie skoku dodaj moc pionową
         if (jump)
         {
             rb2d.AddForce(new Vector2(0f, jumpForce));
@@ -77,7 +72,9 @@ public class SimplePlatformController : MonoBehaviour
         }
 
     }
-
+    // przyśpieszanie - dodawanie do mocy wielokrotności bieżącej prędkości, stopnia przytrzymania klawisza i mnożnika prędkości
     void SpeedUp() => rb2d.AddForce(Vector2.right * horizontalInput * moveForce);
+
+    // pobranie maks. prędkości jako wektora dwuwymiar.
     Vector2 GetMaxSpeed() => new Vector2(Mathf.Sign(rb2d.velocity.x) * maxSpeed, rb2d.velocity.y);
 }
