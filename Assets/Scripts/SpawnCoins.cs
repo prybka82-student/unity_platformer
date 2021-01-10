@@ -4,29 +4,24 @@ using UnityEngine;
 
 public class SpawnCoins : MonoBehaviour
 {
-    public Transform[] coinSpawns;
-    public GameObject coin;
-    public GameObject bigCoin;
+    public Transform[] coinSpawns;  // tablica generowanych monet
+    public GameObject coin;         // prototyp małej monety (obiekt prefab)
+    public GameObject bigCoin;      // prototyp dużej monety (obiekt prefab)
 
-    // Start is called before the first frame update
     void Start()
     {
-        Spawn();
+        Spawn(); //wygenerowanie monet
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 
     void Spawn()
     {
         for (int i = 0; i < coinSpawns.Length; i++)
         {
-            if (CoinFlip())
+            if (CoinFlip()) //rzut monetą -- losowanie występowania monety w danej pozycji
             {
-                if (CoinFlip())
+                if (CoinFlip()) //jeśli moneta ma się pojawić, to jaka: mała czy duża
                     CreateCoin(coin, i);
                 else
                     CreateCoin(bigCoin, i);                
@@ -34,6 +29,7 @@ public class SpawnCoins : MonoBehaviour
         }
     }
 
-    bool CoinFlip() => Random.Range(0, 2) > 0;
-    void CreateCoin(GameObject coin, int index) => Instantiate(coin, coinSpawns[index].position, Quaternion.identity); 
+    bool CoinFlip() => Random.Range(0, 2) > 0; //rzut monetą
+    void CreateCoin(GameObject coin, int index) //generowanie monety i dodanie na pozycji z tabeli  
+        => Instantiate(coin, coinSpawns[index].position, Quaternion.identity); 
 }
