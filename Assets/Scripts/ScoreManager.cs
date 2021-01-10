@@ -35,10 +35,16 @@ public class ScoreManager : MonoBehaviour
 
     public static void AddPoints(int pointsToAdd) => score += pointsToAdd;
     public static void Reset() => score = 0;
+
     void PreventNegativeScore() => score = score < 0 ? 0 : score;
     void WinningEndGame()
     {
         youWonText.enabled = true;
-        Debug.Log("You won!!!");
+        Debug.Log("You win!!!");
+        PauseGame();
+    }
+    void PauseGame()
+    {
+        Time.timeScale = 0;
     }
 }
